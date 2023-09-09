@@ -1,0 +1,5 @@
+
+3. Parsing
+4. ouvrir fenetre + simple opengl
+2. Comprendre ce dont j'ai besoin pour opengl
+5. commencer le projet
