@@ -17,8 +17,94 @@ void displayMe(void)
     // glFlush();
 }
  
-void ft_parsing()
-{}
+t_mesh ft_parsing(std::string file_name)
+{
+    
+    std::ifstream file(file_name);
+    if (!file.is_open())
+    {
+        std::cout << "Error opening file : " << file_name << std::endl;
+        exit(1);
+    }
+
+    t_mesh mesh;
+    std::vector<t_vec3> vertexs;
+    std::string line;
+    int num_line = -1;
+    int start = num_line;
+    while (std::getline(file, line))
+    {
+        num_line++;
+        if (line[0] == 'v' && line[1] == ' ')
+        {
+            if (start == -1)
+                start = num_line + 1;
+            t_vec3 vert;
+            std::string x, y, z;
+            int i = 2;
+            while (line[i] != ' ')
+            {
+                x += line[i];
+                i++;
+            }
+            while (line[i] == ' '){i++;}
+            while (line[i] != ' ')
+            {
+                y += line[i];
+                i++;
+            }
+            while (line[i] == ' '){i++;}
+            while (line[i] != ' ')
+            {
+                z += line[i];
+                i++;
+            }
+            vert.x = std::stof(x);
+            vert.y = std::stof(y);
+            vert.z = std::stof(z);
+			std::cout << "vertex : " << num_line << " " << vert.x << " " << vert.y << " " << vert.z << std::endl;
+            vertexs.push_back(vert);
+
+        }
+        else if (line[0] == 'f' && line[1] == ' ')
+        {
+			int v_pos[3];
+            std::string x, y, z;
+            int i = 2;
+            while (line[i] != ' ')
+            {
+                x += line[i];
+                i++;
+            }
+            while (line[i] == ' '){i++;}
+            while (line[i] != ' ')
+            {
+                y += line[i];
+                i++;
+            }
+            while (line[i] == ' '){i++;}
+            while (line[i] != ' ')
+            {
+                z += line[i];
+                i++;
+            }
+            v_pos[0] = std::stoi(x);
+            v_pos[1] = std::stoi(y);
+            v_pos[2] = std::stoi(z);
+			std::cout << "triangle " << v_pos[0] << " " << v_pos[1] << " " << v_pos[2] << std::endl;
+            x = "";
+            y = "";
+            z = "";
+           i++;
+		   std::cout << " x values : " << vertexs[v_pos[0] - start].x << " " << vertexs[v_pos[1] - start].x << " " << vertexs[v_pos[2] - start].x << std::endl;
+		   std::cout << " y values : " << vertexs[v_pos[0] - start].y << " " << vertexs[v_pos[1] - start].y << " " << vertexs[v_pos[2] - start].y << std::endl;
+		   std::cout << " z values : " << vertexs[v_pos[0] - start].z << " " << vertexs[v_pos[1] - start].z << " " << vertexs[v_pos[2] - start].z << std::endl; 
+            mesh.triangles.push_back({vertexs[v_pos[0] - start], vertexs[v_pos[1] - start], vertexs[v_pos[2] - start]});
+		}
+    }
+    file.close();
+    return mesh;
+}
 
 void MultiMatrixVector(t_vec3 &i, t_vec3 &o, t_mat4x4 &m)
 {
@@ -53,13 +139,13 @@ void DrawTriangle(t_triangle tri)
 
 int main(int argc, char** argv)
 {
-    ft_parsing();
+    
 
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_SINGLE);
-    float screenWidth = 600;
-    float screenHeight = 600;
+    float screenWidth = 500;
+    float screenHeight = 750;
     glutInitWindowSize(screenWidth, screenHeight);
     glutInitWindowPosition(10, 200);
     glutCreateWindow("Hello world!");
@@ -72,34 +158,34 @@ int main(int argc, char** argv)
     float fTheta = 1.0f;
     // Rotation Z
 		
+    mesh = ft_parsing(argv[1]);
+        // mesh.triangles = {
 
-        mesh.triangles = {
+		// // SOUTH
+		// { 0.0f, 0.0f, 0.0f,    0.0f, 1.0f, 0.0f,    1.0f, 1.0f, 0.0f },
+		// { 0.0f, 0.0f, 0.0f,    1.0f, 1.0f, 0.0f,    1.0f, 0.0f, 0.0f },
 
-		// SOUTH
-		{ 0.0f, 0.0f, 0.0f,    0.0f, 1.0f, 0.0f,    1.0f, 1.0f, 0.0f },
-		{ 0.0f, 0.0f, 0.0f,    1.0f, 1.0f, 0.0f,    1.0f, 0.0f, 0.0f },
+		// // EAST                                                      
+		// { 1.0f, 0.0f, 0.0f,    1.0f, 1.0f, 0.0f,    1.0f, 1.0f, 1.0f },
+		// { 1.0f, 0.0f, 0.0f,    1.0f, 1.0f, 1.0f,    1.0f, 0.0f, 1.0f },
 
-		// EAST                                                      
-		{ 1.0f, 0.0f, 0.0f,    1.0f, 1.0f, 0.0f,    1.0f, 1.0f, 1.0f },
-		{ 1.0f, 0.0f, 0.0f,    1.0f, 1.0f, 1.0f,    1.0f, 0.0f, 1.0f },
+		// // NORTH                                                     
+		// { 1.0f, 0.0f, 1.0f,    1.0f, 1.0f, 1.0f,    0.0f, 1.0f, 1.0f },
+		// { 1.0f, 0.0f, 1.0f,    0.0f, 1.0f, 1.0f,    0.0f, 0.0f, 1.0f },
 
-		// NORTH                                                     
-		{ 1.0f, 0.0f, 1.0f,    1.0f, 1.0f, 1.0f,    0.0f, 1.0f, 1.0f },
-		{ 1.0f, 0.0f, 1.0f,    0.0f, 1.0f, 1.0f,    0.0f, 0.0f, 1.0f },
+		// // WEST                                                      
+		// { 0.0f, 0.0f, 1.0f,    0.0f, 1.0f, 1.0f,    0.0f, 1.0f, 0.0f },
+		// { 0.0f, 0.0f, 1.0f,    0.0f, 1.0f, 0.0f,    0.0f, 0.0f, 0.0f },
 
-		// WEST                                                      
-		{ 0.0f, 0.0f, 1.0f,    0.0f, 1.0f, 1.0f,    0.0f, 1.0f, 0.0f },
-		{ 0.0f, 0.0f, 1.0f,    0.0f, 1.0f, 0.0f,    0.0f, 0.0f, 0.0f },
+		// // TOP                                                       
+		// { 0.0f, 1.0f, 0.0f,    0.0f, 1.0f, 1.0f,    1.0f, 1.0f, 1.0f },
+		// { 0.0f, 1.0f, 0.0f,    1.0f, 1.0f, 1.0f,    1.0f, 1.0f, 0.0f },
 
-		// TOP                                                       
-		{ 0.0f, 1.0f, 0.0f,    0.0f, 1.0f, 1.0f,    1.0f, 1.0f, 1.0f },
-		{ 0.0f, 1.0f, 0.0f,    1.0f, 1.0f, 1.0f,    1.0f, 1.0f, 0.0f },
+		// // BOTTOM                                                    
+		// { 1.0f, 0.0f, 1.0f,    0.0f, 0.0f, 1.0f,    0.0f, 0.0f, 0.0f },
+		// { 1.0f, 0.0f, 1.0f,    0.0f, 0.0f, 0.0f,    1.0f, 0.0f, 0.0f },
 
-		// BOTTOM                                                    
-		{ 1.0f, 0.0f, 1.0f,    0.0f, 0.0f, 1.0f,    0.0f, 0.0f, 0.0f },
-		{ 1.0f, 0.0f, 1.0f,    0.0f, 0.0f, 0.0f,    1.0f, 0.0f, 0.0f },
-
-		};
+		// };
 
     float fNear = 0.1f;
     float fFar = 10000.0f;
@@ -131,14 +217,25 @@ int main(int argc, char** argv)
 
     glClear(GL_COLOR_BUFFER_BIT);
 
-    glBegin(GL_LINES);
-    glVertex2f(0.1f, 0.1f);
-    glVertex2f(0.9f, 0.9f);
-    glEnd();
+				// Test line
+
+    // glBegin(GL_LINES);
+    // glVertex2f(1.0f, 1.0f);
+    // glVertex2f(0.0f, 0.0f);
+    // glEnd();
+
+				// ---END Test line
 
     for (auto triangle : mesh.triangles)
     {
-        t_triangle triProjected,  triRotatedZ, triRotatedZX;
+        t_triangle triProjected;
+	// std::cout << triangle.v[0].x << " " << triangle.v[0].y << " " << triangle.v[0].z
+	// << " " << triangle.v[1].x << " " << triangle.v[1].y << " " << triangle.v[1].z
+	// << " " << triangle.v[2].x << " " << triangle.v[2].y << " " << triangle.v[2].z << std::endl;
+
+					// Rotate in Z-Axis
+
+		t_triangle triRotatedZ, triRotatedZX;
         MultiMatrixVector(triangle.v[0], triRotatedZ.v[0], matRotZ);
         MultiMatrixVector(triangle.v[1], triRotatedZ.v[1], matRotZ);
         MultiMatrixVector(triangle.v[2], triRotatedZ.v[2], matRotZ);
@@ -147,27 +244,37 @@ int main(int argc, char** argv)
         MultiMatrixVector(triRotatedZ.v[1], triRotatedZX.v[1], matRotX);
         MultiMatrixVector(triRotatedZ.v[2], triRotatedZX.v[2], matRotX);
 
-        MultiMatrixVector(triRotatedZX.v[0], triProjected.v[0], matProj);
-        MultiMatrixVector(triRotatedZX.v[1], triProjected.v[1], matProj);
-        MultiMatrixVector(triRotatedZX.v[2], triProjected.v[2], matProj);
+        // MultiMatrixVector(triRotatedZX.v[0], triProjected.v[0], matProj);
+        // MultiMatrixVector(triRotatedZX.v[1], triProjected.v[1], matProj);
+        // MultiMatrixVector(triRotatedZX.v[2], triProjected.v[2], matProj);
+
+		triProjected = triRotatedZX;
+		
+		// triProjected.v[0].x -=1.0f; triProjected.v[0].y -=1.0f;
+        // triProjected.v[1].x -=1.0f; triProjected.v[1].y -=1.0f;
+        // triProjected.v[2].x -=1.0f; triProjected.v[2].y -=1.0f;
+
+        DrawTriangle(triProjected);
+
+					// ---END Rotate in Z-Axis
+
+
+					// Affiche normalelement
 
         // MultiMatrixVector(triangle.v[0], triProjected.v[0], matProj);
         // MultiMatrixVector(triangle.v[1], triProjected.v[1], matProj);
         // MultiMatrixVector(triangle.v[2], triProjected.v[2], matProj);
+		// std::cout << "triangleProjected" << triProjected.v[0].x << " " << triProjected.v[0].y << " " << triProjected.v[0].z << std::endl;
+		// DrawTriangle(triProjected);
+
+					// ---END Affiche normalelement
+
 
         
-        // triProjected.v[0].x += 1.0f; triProjected.v[0].y += 1.0f;
-        // triProjected.v[1].x += 1.0f; triProjected.v[1].y += 1.0f;
-        // triProjected.v[2].x += 1.0f; triProjected.v[2].y += 1.0f;
-
-        // triProjected.v[0].x *= 0.5f * screenWidth; triProjected.v[0].y *= 0.5f * screenHeight;
-        // triProjected.v[1].x *= 0.5f * screenWidth; triProjected.v[1].y *= 0.5f * screenHeight;
-        // triProjected.v[2].x *= 0.5f * screenWidth; triProjected.v[2].y *= 0.5f * screenHeight;
 
 
-
-        DrawTriangle(triRotatedZX);
-        fTheta += 0.0001f;
+        
+        fTheta += 0.00004f;
     }
     glFlush();
     

@@ -3,6 +3,7 @@
 
 # include <iostream>
 # include <math.h>
+# include <fstream>
 # include <GL/glut.h>
 # include <vector>
 
