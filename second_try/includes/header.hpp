@@ -2,6 +2,8 @@
 # define HEADER_HPP
 
 # include <iostream>
+# include <string.h>
+# include <sstream>
 # include <fstream>
 # include <math.h>
 # include "glad/glad.h" 
@@ -34,6 +36,7 @@ typedef struct s_mat4x4
 
 t_mesh		ft_parsing(std::string file_name);
 void		MultiMatrixVector(t_vec3 &i, t_vec3 &o, t_mat4x4 &m);
+char* ft_get_file(std::string file_name);
 void		DrawTriangle(t_triangle tri);
 
 #endif
