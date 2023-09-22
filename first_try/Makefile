@@ -3,7 +3,9 @@ CC = g++
 CFLAGS = -Wall -Wextra -Werror -std=c++11
 OPENGL = -lglut -lGLU -lGL
 
-SRCS = main.cpp
+SRCS =	main.cpp \
+		utils.cpp \
+		game.cpp
 
 SOURCES = $(addprefix sources/, $(SRCS))
 

@@ -1,4 +1,4 @@
-#include "header.hpp"
+#include "../includes/header.hpp"
 //g++ openGL.cpp -lglut -lGLU -lGL; ./a.out
 
 

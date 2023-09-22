@@ -2,10 +2,14 @@
 # define HEADER_HPP
 
 # include <iostream>
-# include <math.h>
 # include <fstream>
+# include <math.h>
+# include "glad/glad.h" 
 # include <GL/glut.h>
+// # include <glew.h> 
+# include <GLFW/glfw3.h>
 # include <vector>
+
 
 typedef struct s_vec3
 {
@@ -26,5 +30,10 @@ typedef struct s_mat4x4
 {
 	float v[4][4] = { 0 };
 }				t_mat4x4;
+
+
+t_mesh		ft_parsing(std::string file_name);
+void		MultiMatrixVector(t_vec3 &i, t_vec3 &o, t_mat4x4 &m);
+void		DrawTriangle(t_triangle tri);
 
 #endif

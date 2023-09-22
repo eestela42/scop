@@ -10,3 +10,5 @@ le centre de l'ecran est 0 0
 
 problemes : pas d'uttilisation des calcues carte graphique
 			ma pos = 0-0-0 ?
+
+https://learnopengl.com/Getting-started/Hello-Triangle
