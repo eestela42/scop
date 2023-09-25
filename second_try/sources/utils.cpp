@@ -48,7 +48,7 @@ t_mesh ft_parsing(std::string file_name)
             vert.y = std::stof(y);
             vert.z = std::stof(z);
 			// std::cout << "vertex : " << num_line << " " << vert.x << " " << vert.y << " " << vert.z << std::endl;
-            vertexs.push_back(vert);
+            mesh.to_vbo.push_back(vert);
         }
         else if (line[0] == 'f' && line[1] == ' ')
         {
@@ -83,7 +83,7 @@ t_mesh ft_parsing(std::string file_name)
 		//    std::cout << " x values : " << vertexs[v_pos[0] - start].x << " " << vertexs[v_pos[1] - start].x << " " << vertexs[v_pos[2] - start].x << std::endl;
 		//    std::cout << " y values : " << vertexs[v_pos[0] - start].y << " " << vertexs[v_pos[1] - start].y << " " << vertexs[v_pos[2] - start].y << std::endl;
 		//    std::cout << " z values : " << vertexs[v_pos[0] - start].z << " " << vertexs[v_pos[1] - start].z << " " << vertexs[v_pos[2] - start].z << std::endl; 
-            mesh.triangles.push_back({vertexs[v_pos[0] - start], vertexs[v_pos[1] - start], vertexs[v_pos[2] - start]});
+            mesh.to_ebo.push_back({v_pos[0], v_pos[1], v_pos[2]});
 		}
     }
     file.close();

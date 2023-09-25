@@ -12,6 +12,10 @@
 # include <GLFW/glfw3.h>
 # include <vector>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 
 typedef struct s_vec3
 {
@@ -20,12 +24,13 @@ typedef struct s_vec3
 
 typedef struct s_triangle
 {
-	t_vec3 v[3];
+	int v[3];
 }				t_triangle;
 
 typedef struct s_mesh
 {
-	std::vector<t_triangle> triangles;
+	std::vector<t_vec3> to_vbo;
+	std::vector<t_triangle> to_ebo;
 }				t_mesh;
 
 typedef struct s_mat4x4
