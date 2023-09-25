@@ -1,6 +1,6 @@
 #include "../includes/header.hpp"
 //g++ openGL.cpp -lglut -lGLU -lGL; ./a.out
-
+#include "../includes/stb_image.h"
 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -34,17 +34,6 @@ int main(int ac, char** av)
 	// unsigned int VBO;
 	// glGenBuffers(1, &VBO);
 	// glBindBuffer(GL_ARRAY_BUFFER, VBO);  
-
-	float vertices[] = {
-     0.5f,  0.5f, 0.0f,  // top right
-     0.5f, -0.5f, 0.0f,  // bottom right
-    -0.5f, -0.5f, 0.0f,  // bottom left
-    -0.5f,  0.5f, 0.0f   // top left 
-	};
-	unsigned int indices[] = {  // note that we start from 0!
-		0, 1, 3,   // first triangle
-		1, 2, 3    // second triangle
-	};  
 
 
 	GLFWwindow* window = glfwCreateWindow(800, 600, "SCOP LE PROJET COOL", NULL, NULL);
@@ -132,18 +121,18 @@ int main(int ac, char** av)
 	float fTheta = 1.0f;
 	t_mat4x4 matRotZ, matRotX;
 
-	glm::vec3 cubePositions[] = {
-        glm::vec3( 0.0f,  0.0f,  0.0f),
-        glm::vec3( 2.0f,  5.0f, -15.0f),
-        glm::vec3(-1.5f, -2.2f, -2.5f),
-        glm::vec3(-3.8f, -2.0f, -12.3f),
-        glm::vec3( 2.4f, -0.4f, -3.5f),
-        glm::vec3(-1.7f,  3.0f, -7.5f),
-        glm::vec3( 1.3f, -2.0f, -2.5f),
-        glm::vec3( 1.5f,  2.0f, -2.5f),
-        glm::vec3( 1.5f,  0.2f, -1.5f),
-        glm::vec3(-1.3f,  1.0f, -1.5f)
-    };
+	// glm::vec3 cubePositions[] = {
+    //     glm::vec3( 0.0f,  0.0f,  0.0f),
+    //     glm::vec3( 2.0f,  5.0f, -15.0f),
+    //     glm::vec3(-1.5f, -2.2f, -2.5f),
+    //     glm::vec3(-3.8f, -2.0f, -12.3f),
+    //     glm::vec3( 2.4f, -0.4f, -3.5f),
+    //     glm::vec3(-1.7f,  3.0f, -7.5f),
+    //     glm::vec3( 1.3f, -2.0f, -2.5f),
+    //     glm::vec3( 1.5f,  2.0f, -2.5f),
+    //     glm::vec3( 1.5f,  0.2f, -1.5f),
+    //     glm::vec3(-1.3f,  1.0f, -1.5f)
+    // };
 
 	// glm::mat4 view = glm::mat4(1.0f);
 	// // note that we're translating the scene in the reverse direction of where we want to move
@@ -156,37 +145,91 @@ int main(int ac, char** av)
 	// unsigned int projectionInt = glGetUniformLocation(shaderProgram, "model");
 	// glUniformMatrix4fv(projectionInt, 1, GL_FALSE, &projection[0][0]);
 
+
+
+	// textures
+	float texCoords[] = {
+		0.0f, 0.0f,  // lower-left corner  
+		1.0f, 0.0f,  // lower-right corner
+		0.5f, 1.0f   // top-center corner
+	};
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+
+	float borderColor[] = { 1.0f, 1.0f, 0.0f, 1.0f };
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	int width, height, nrChannels;
+	unsigned char *data = stbi_load("../resources_42/wall.jpg", &width, &height, &nrChannels, 0);
+
+
+	unsigned int texture;
+	glGenTextures(1, &texture);  
+	glBindTexture(GL_TEXTURE_2D, texture); 
+	if (data)
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}else
+	{
+		std::cout << "Failed to load texture" << std::endl;
+	}
+
+	stbi_image_free(data);
+
+	float vertices[] = {
+    // positions          // colors           // texture coords
+     0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right
+     0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // bottom right
+    -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // bottom left
+    -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // top left 
+	};
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	glEnableVertexAttribArray(2); 
+
+
+	
+
 	std::cout << "size : " << mesh.to_ebo.size() * 3 << std::endl; 
  	while(!glfwWindowShouldClose(window))
 	{
-		matRotZ.v[0][0] = cosf(fTheta);
-		matRotZ.v[0][1] = sinf(fTheta);
-		matRotZ.v[1][0] = -sinf(fTheta);
-		matRotZ.v[1][1] = cosf(fTheta);
-		matRotZ.v[2][2] = 1;
-		matRotZ.v[3][3] = 1;
+		glBindTexture(GL_TEXTURE_2D, texture);
+		glBindVertexArray(VAO);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+			// matRotZ.v[0][0] = cosf(fTheta);
+			// matRotZ.v[0][1] = sinf(fTheta);
+			// matRotZ.v[1][0] = -sinf(fTheta);
+			// matRotZ.v[1][1] = cosf(fTheta);
+			// matRotZ.v[2][2] = 1;
+			// matRotZ.v[3][3] = 1;
 
-		// Rotation X
-		matRotX.v[0][0] = 1;
-		matRotX.v[1][1] = cosf(fTheta * 0.5f);
-		matRotX.v[1][2] = sinf(fTheta * 0.5f);
-		matRotX.v[2][1] = -sinf(fTheta * 0.5f);
-		matRotX.v[2][2] = cosf(fTheta * 0.5f);
-		matRotX.v[3][3] = 1;
+			// // Rotation X
+			// matRotX.v[0][0] = 1;
+			// matRotX.v[1][1] = cosf(fTheta * 0.5f);
+			// matRotX.v[1][2] = sinf(fTheta * 0.5f);
+			// matRotX.v[2][1] = -sinf(fTheta * 0.5f);
+			// matRotX.v[2][2] = cosf(fTheta * 0.5f);
+			// matRotX.v[3][3] = 1;
 
-        // render
-        // ------
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+			// // render
+			// // ------
+			// glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+			// glClear(GL_COLOR_BUFFER_BIT);
 
-        // draw our first triangle
-        glUseProgram(shaderProgram);
+			// // draw our first triangle
+			// glUseProgram(shaderProgram);
 
-		float timeValue = glfwGetTime();
-		float greenValue = (sin(timeValue) / 2.0f) + 0.5f;
-		int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
-		glUseProgram(shaderProgram);
-		glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
+			// float timeValue = glfwGetTime();
+			// float greenValue = (sin(timeValue) / 2.0f) + 0.5f;
+			// int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
+			// glUseProgram(shaderProgram);
+			// glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
 
 		// int vertexMatrixLocation = glGetUniformLocation(shaderProgram, "matRotZ");
 		// glUniformMatrix4fv(vertexMatrixLocation, 1, GL_TRUE, (const GLfloat*)matRotZ.v);
