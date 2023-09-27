@@ -59,7 +59,7 @@ t_mesh ft_parsing(std::string file_name)
         }
         else if (line[0] == 'f' && line[1] == ' ')
         {
-			int v_pos[3];
+			unsigned int v_pos[3];
             std::string x, y, z;
             int i = 2;
             while (line[i] != ' ')
@@ -79,9 +79,9 @@ t_mesh ft_parsing(std::string file_name)
                 z += line[i];
                 i++;
             }
-            v_pos[0] = std::stoi(x);
-            v_pos[1] = std::stoi(y);
-            v_pos[2] = std::stoi(z);
+            v_pos[0] = (unsigned int)std::stoi(x);
+            v_pos[1] = (unsigned int)std::stoi(y);
+            v_pos[2] = (unsigned int)std::stoi(z);
 			// std::cout << "triangle " << v_pos[0] << " " << v_pos[1] << " " << v_pos[2] << std::endl;
             x = "";
             y = "";
@@ -90,7 +90,7 @@ t_mesh ft_parsing(std::string file_name)
 		//    std::cout << " x values : " << vertexs[v_pos[0] - start].x << " " << vertexs[v_pos[1] - start].x << " " << vertexs[v_pos[2] - start].x << std::endl;
 		//    std::cout << " y values : " << vertexs[v_pos[0] - start].y << " " << vertexs[v_pos[1] - start].y << " " << vertexs[v_pos[2] - start].y << std::endl;
 		//    std::cout << " z values : " << vertexs[v_pos[0] - start].z << " " << vertexs[v_pos[1] - start].z << " " << vertexs[v_pos[2] - start].z << std::endl; 
-            mesh.to_ebo.push_back({v_pos[0], v_pos[1], v_pos[2]});
+            mesh.to_ebo.push_back({v_pos[0] -1, v_pos[1] -1, v_pos[2] -1});
 		}
     }
     file.close();
@@ -127,8 +127,8 @@ void MultiMatrixVector(t_vec3 &i, t_vec3 &o, t_mat4x4 &m)
 	file.close();
 	line = s1.str();
 
-	std::cout << line.c_str() << std::endl;
-	std::cout << "YES\n";
+	// std::cout << line.c_str() << std::endl;
+	// std::cout << "YES\n";
 
 	char *ret = new char[line.length() + 1];
 	strcpy(ret, line.c_str());

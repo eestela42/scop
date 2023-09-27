@@ -2,6 +2,11 @@
 //g++ openGL.cpp -lglut -lGLU -lGL; ./a.out
 #include "../includes/stb_image.h"
 
+void processInput(GLFWwindow *window)
+{
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, true);
+}
 
 
 int main(int ac, char** av)
@@ -20,173 +25,73 @@ int main(int ac, char** av)
 	game.initShadder();
 	
 	game.initBuffers();
-	
 
-	// unsigned int VBO, VAO, EBO;
-    // glGenBuffers(1, &VBO);
-	// glGenVertexArrays(1, &VAO);
-	// glGenBuffers(1, &EBO);
-
-	// glBindVertexArray(VAO);
-	
-	// glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    // glBufferData(GL_ARRAY_BUFFER, sizeof(mesh), mesh.to_vbo.data(), GL_STATIC_DRAW);
-
-	// glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    // glEnableVertexAttribArray(0);
-
-	
-
-	// glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	// glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(mesh.to_ebo), mesh.to_ebo.data(), GL_STATIC_DRAW);
-
-
-	// glBindBuffer(GL_ARRAY_BUFFER, 0); 
-
-	// glBindVertexArray(0); 
+	game.initTexture();
 
 	// only lines
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	// rotation
 
 	float fTheta = 1.0f;
 	t_mat4x4 matRotZ, matRotX;
 
-	// glm::vec3 cubePositions[] = {
-    //     glm::vec3( 0.0f,  0.0f,  0.0f),
-    //     glm::vec3( 2.0f,  5.0f, -15.0f),
-    //     glm::vec3(-1.5f, -2.2f, -2.5f),
-    //     glm::vec3(-3.8f, -2.0f, -12.3f),
-    //     glm::vec3( 2.4f, -0.4f, -3.5f),
-    //     glm::vec3(-1.7f,  3.0f, -7.5f),
-    //     glm::vec3( 1.3f, -2.0f, -2.5f),
-    //     glm::vec3( 1.5f,  2.0f, -2.5f),
-    //     glm::vec3( 1.5f,  0.2f, -1.5f),
-    //     glm::vec3(-1.3f,  1.0f, -1.5f)
-    // };
 
-	// glm::mat4 view = glm::mat4(1.0f);
-	// // note that we're translating the scene in the reverse direction of where we want to move
-	// view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
-	// unsigned int viewInt = glGetUniformLocation(shaderProgram, "model");
-	// glUniformMatrix4fv(viewInt, 1, GL_FALSE, &view[0][0]);
+	// std::cout << "size : " << game.getMesh().to_ebo.size() * 3 << std::endl; 
+	glBindVertexArray(game.getVAO()); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
 
-	// glm::mat4 projection;
-	// projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
-	// unsigned int projectionInt = glGetUniformLocation(shaderProgram, "model");
-	// glUniformMatrix4fv(projectionInt, 1, GL_FALSE, &projection[0][0]);
+	glUseProgram(game.getShaderProgram());
 
 
 
-	// textures
-	float texCoords[] = {
-		0.0f, 0.0f,  // lower-left corner  
-		1.0f, 0.0f,  // lower-right corner
-		0.5f, 1.0f   // top-center corner
-	};
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
 
-	float borderColor[] = { 1.0f, 1.0f, 0.0f, 1.0f };
-	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+	//textures
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glUniform1i(glGetUniformLocation(game.getShaderProgram(), "ourTexture"), 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, game.getTexture());
+	std::cout << "texture : " << game.getTexture() << std::endl;
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	int width, height, nrChannels;
-	unsigned char *data = stbi_load("../resources_42/wall.jpg", &width, &height, &nrChannels, 0);
-
-
-	unsigned int texture;
-	glGenTextures(1, &texture);  
-	glBindTexture(GL_TEXTURE_2D, texture); 
-	if (data)
-	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}else
-	{
-		std::cout << "Failed to load texture" << std::endl;
-	}
-
-	stbi_image_free(data);
-
-	float vertices[] = {
-    // positions          // colors           // texture coords
-     0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right
-     0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // bottom right
-    -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // bottom left
-    -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // top left 
-	};
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-	glEnableVertexAttribArray(2); 
-
-
+	glEnable(GL_DEPTH_TEST);
 	
 
-	std::cout << "size : " << game.getMesh().to_ebo.size() * 3 << std::endl; 
  	while(!glfwWindowShouldClose(game.getWindow()))
 	{
-		glBindTexture(GL_TEXTURE_2D, texture);
-		glBindVertexArray(game.getVAO());
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-			// matRotZ.v[0][0] = cosf(fTheta);
-			// matRotZ.v[0][1] = sinf(fTheta);
-			// matRotZ.v[1][0] = -sinf(fTheta);
-			// matRotZ.v[1][1] = cosf(fTheta);
-			// matRotZ.v[2][2] = 1;
-			// matRotZ.v[3][3] = 1;
+			glfwPollEvents();
+		/****matrixes****/
+			glm::mat4 model = glm::mat4(1.0f);
+			model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
 
-			// // Rotation X
-			// matRotX.v[0][0] = 1;
-			// matRotX.v[1][1] = cosf(fTheta * 0.5f);
-			// matRotX.v[1][2] = sinf(fTheta * 0.5f);
-			// matRotX.v[2][1] = -sinf(fTheta * 0.5f);
-			// matRotX.v[2][2] = cosf(fTheta * 0.5f);
-			// matRotX.v[3][3] = 1;
+			unsigned int modelLoc = glGetUniformLocation(game.getShaderProgram(), "model");
+			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
-			// // render
-			// // ------
-			// glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-			// glClear(GL_COLOR_BUFFER_BIT);
+			glm::mat4 view = glm::mat4(1.0f);
+			// note that we're translating the scene in the reverse direction of where we want to move
+			view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
 
-			// // draw our first triangle
-			// glUseProgram(shaderProgram);
+			unsigned int viewLoc = glGetUniformLocation(game.getShaderProgram(), "view");
+			glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 
-			// float timeValue = glfwGetTime();
-			// float greenValue = (sin(timeValue) / 2.0f) + 0.5f;
-			// int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
-			// glUseProgram(shaderProgram);
-			// glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
+			glm::mat4 projection;
+			projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 
-		// int vertexMatrixLocation = glGetUniformLocation(shaderProgram, "matRotZ");
-		// glUniformMatrix4fv(vertexMatrixLocation, 1, GL_TRUE, (const GLfloat*)matRotZ.v);
+			unsigned int projectionLoc = glGetUniformLocation(game.getShaderProgram(), "projection");
+			glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
-		// vertexMatrixLocation = glGetUniformLocation(shaderProgram, "matRotX");
-		// glUniformMatrix4fv(vertexMatrixLocation, 1, GL_TRUE, (const GLfloat*)matRotX.v);
+		/****matrixes END****/
 
+		processInput(game.getWindow());
 
-		glm::mat4 model = glm::mat4(1.0f);
-		float angle = 20.0f + fTheta; 
-		model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-		unsigned int vertexMatrixLocation = glGetUniformLocation(game.getShaderProgram(), "model");
-		glUniformMatrix4fv(vertexMatrixLocation, 1, GL_FALSE, &model[0][0]);
+		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        // draw our first triangle
+		
+		
+		glDrawElements(GL_TRIANGLES, game.getMesh().to_ebo.size() * 3, GL_UNSIGNED_INT, 0);
 
-        glBindVertexArray(game.getVAO()); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-        glDrawElements(GL_TRIANGLES, game.getMesh().to_ebo.size() * 3, GL_UNSIGNED_INT, 0);
-        // glBindVertexArray(0); // no need to unbind it every time 
- 
-        // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
-        // -------------------------------------------------------------------------------
         glfwSwapBuffers(game.getWindow());
-        glfwPollEvents();
-
-		fTheta += 1.f;
+		
     } 
 
   

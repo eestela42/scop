@@ -22,21 +22,28 @@
 # define STB_IMAGE_IMPLEMENTATION
 
 
-typedef struct s_vec3
-{
-	float x, y, z;
-}				t_vec3;
+// typedef struct s_vec3
+// {
+// 	float x, y, z;
+// }				t_vec3;
 
-typedef struct s_triangle
-{
-	int v[3];
-}				t_triangle;
+// typedef struct s_triangle
+// {
+// 	int v[3];
+// }				t_triangle;
 
-typedef struct s_mesh
-{
-	std::vector<t_vec3> to_vbo;
-	std::vector<t_triangle> to_ebo;
-}				t_mesh;
+// typedef struct s_mesh
+// {
+// 	std::vector<t_vec3> to_vbo;
+// 	std::vector<t_triangle> to_ebo;
+// }				t_mesh;
+
+// class t_mesh
+// {
+// 	public:
+// 		std::vector<t_vec3> to_vbo;
+// 		std::vector<t_triangle> to_ebo;
+// };
 
 typedef struct s_mat4x4
 {

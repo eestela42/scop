@@ -19,6 +19,33 @@ game::game(int width, int height): game()
 	this->height = height;
 }
 
+void game::addColorTo_vbo()
+{
+	std::vector<t_vec3> new_vbo;
+	t_vec3 colors[] = {
+		{1.0f, 0.0f, 0.0f}, // red
+		{0.0f, 1.0f, 0.0f}, // green
+		{0.0f, 0.0f, 1.0f}  // blue
+	};
+	t_vec3 textureCoo[] = {
+		{1.0f, 1.0f},
+		{1.0f, 0.0f},
+		{0.0f, 0.0f},
+		{0.0f, 1.0f}
+	};
+
+	for (int i = 0; i < this->mesh.to_vbo.size(); i++)
+	{
+
+		new_vbo.push_back(this->mesh.to_vbo[i]);
+		new_vbo.push_back(colors[i % 3]);
+		new_vbo.push_back(textureCoo[i % 4]);
+	}
+	mesh.to_vbo = new_vbo;
+}
+
+
+
 int game::init(int ac, char **av)
 {
 
@@ -27,8 +54,8 @@ int game::init(int ac, char **av)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	GLFWwindow* window = glfwCreateWindow(800, 600, "SCOP LE PROJET COOL", NULL, NULL);
-	if (window == NULL)
+	this->window = glfwCreateWindow(800, 600, "SCOP LE PROJET COOL", NULL, NULL);
+	if (this->window == NULL)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
 		glfwTerminate();
@@ -36,7 +63,24 @@ int game::init(int ac, char **av)
 	}
 
 	this->mesh = ft_parsing(av[1]);
-	this->window = glfwCreateWindow(this->width, this->height, "SCOP LE PROJET COOL", NULL, NULL);
+	// for (int i = 0; i < this->mesh.to_ebo.size(); i++)
+	// {
+	// 	this->mesh.to_ebo[i].v[0] /= 2;
+	// 	this->mesh.to_ebo[i].v[1] /= 2;
+	// 	this->mesh.to_ebo[i].v[2] /= 2;
+	// }
+//print mesh 
+	this->addColorTo_vbo();
+
+
+	for	(std::vector<t_vec3>::iterator it = this->mesh.to_vbo.begin(); it != this->mesh.to_vbo.end(); ++it)
+		std::cout << "vertex : " << it->x << " " << it->y << " " << it->z << std::endl;
+	for	(std::vector<t_triangle>::iterator it = this->mesh.to_ebo.begin(); it != this->mesh.to_ebo.end(); ++it)
+		std::cout << "triangle : " << it->v[0] << " " << it->v[1] << " " << it->v[2] << std::endl;
+
+
+	glfwMakeContextCurrent(this->window);
+	// this->window = glfwCreateWindow(this->width, this->height, "SCOP LE PROJET COOL", NULL, NULL);
 	this->updateIsRunning(true);
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
@@ -47,6 +91,7 @@ int game::init(int ac, char **av)
 	glfwSetFramebufferSizeCallback(this->window, framebuffer_size_callback);
 	return (0);
 }
+
 
 
 int game::initShadder()
@@ -99,28 +144,74 @@ int game::initShadder()
 
 int game::initBuffers()
 {
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0); 
-
-	glGenBuffers(1, &this->VBO);
-	glGenVertexArrays(1, &this->VAO);
-	glGenBuffers(1, &this->EBO);
-
-	glBindVertexArray(this->VAO);
 	
-	glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(this->mesh.to_vbo), this->mesh.to_vbo.data(), GL_STATIC_DRAW);
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
+    // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
+    glBindVertexArray(VAO);
+	
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, mesh.to_vbo.size() * sizeof(t_vec3), &mesh.to_vbo[0], GL_STATIC_DRAW);
+	// glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.to_ebo.size() * sizeof(t_triangle), &mesh.to_ebo[0], GL_STATIC_DRAW);
+    // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    // position attribute
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
+	// color attribute
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(3* sizeof(float)));
+	glEnableVertexAttribArray(1);
+
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(6 * sizeof(float)));
+	glEnableVertexAttribArray(2);
+
+    // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
+    // glBindBuffer(GL_ARRAY_BUFFER, 0); 
+
+    // remember: do NOT unbind the EBO while a VAO is active as the bound element buffer object IS stored in the VAO; keep the EBO bound.
+    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+    // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
+    // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
+    glBindVertexArray(0); 
 
 	
+	return (0);
+}
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(this->mesh.to_ebo), this->mesh.to_ebo.data(), GL_STATIC_DRAW);
+int game::initTexture()
+{
 
-	glBindBuffer(GL_ARRAY_BUFFER, 0); 
-	glBindVertexArray(0); 
+
+	glGenTextures(1, &this->texture);  
+	glBindTexture(GL_TEXTURE_2D, this->texture); 
+
+	// set the texture wrapping parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // set texture filtering parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	int width, height, nrChannels;
+	unsigned char *data = stbi_load("../resources_42/wall.jpg", &width, &height, &nrChannels, 0);
+
+
+	
+	if (data)
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}else
+	{
+		std::cout << "Failed to load texture" << std::endl;
+	}
+
+	stbi_image_free(data);
 	return (0);
 }
 
@@ -131,6 +222,9 @@ void game::gameLoop()
 	
 	}	
 }
+
+
+
 
 
 unsigned int game::getVAO()
@@ -146,6 +240,11 @@ unsigned int game::getVBO()
 unsigned int game::getEBO()
 {
 	return (this->EBO);
+}
+
+unsigned int game::getTexture()
+{
+	return (this->texture);
 }
 
 unsigned int game::getShaderProgram()
@@ -182,5 +281,47 @@ void game::upDateWindow(GLFWwindow* tmp)
 {
 	this->window = tmp;
 }
+
+float* game::vbo_to_vertexes()
+{
+	float *tmp = new float[this->mesh.to_vbo.size() * 3];
+	int i = 0;
+	for	(std::vector<t_vec3>::iterator it = this->mesh.to_vbo.begin(); it != this->mesh.to_vbo.end(); ++it)
+	{
+		tmp[i] = it->x;
+		tmp[i + 1] = it->y;
+		tmp[i + 2] = it->z;
+		i += 3;
+	}
+	return (tmp);
+}
+
+unsigned int* game::ebo_to_indices()
+{
+	unsigned int *tmp = new unsigned int[this->mesh.to_ebo.size() * 3];
+	int i = 0;
+	for	(std::vector<t_triangle>::iterator it = this->mesh.to_ebo.begin(); it != this->mesh.to_ebo.end(); ++it)
+	{
+		tmp[i] = it->v[0];
+		tmp[i + 1] = it->v[1];
+		tmp[i + 2] = it->v[2];
+		i += 3;
+	}
+	return (tmp);
+}
+
+
+void game::setBool(const std::string &name, bool value) const
+{         
+    glUniform1i(glGetUniformLocation(this->shaderProgram, name.c_str()), (int)value); 
+}
+void game::setInt(const std::string &name, int value) const
+{ 
+    glUniform1i(glGetUniformLocation(this->shaderProgram, name.c_str()), value); 
+}
+void game::setFloat(const std::string &name, float value) const
+{ 
+    glUniform1f(glGetUniformLocation(this->shaderProgram, name.c_str()), value); 
+} 
 
 
