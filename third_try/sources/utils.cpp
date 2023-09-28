@@ -24,9 +24,11 @@ t_mesh ft_parsing(std::string file_name)
     int start = num_line;
     while (std::getline(file, line))
     {
-        num_line++;
+        
+		num_line++;
         if (line[0] == 'v' && line[1] == ' ')
         {
+			std::cout << "line : " << line << std::endl;
             if (start == -1)
                 start = num_line + 1;
             t_vec3 vert;
@@ -90,7 +92,7 @@ t_mesh ft_parsing(std::string file_name)
 		//    std::cout << " x values : " << vertexs[v_pos[0] - start].x << " " << vertexs[v_pos[1] - start].x << " " << vertexs[v_pos[2] - start].x << std::endl;
 		//    std::cout << " y values : " << vertexs[v_pos[0] - start].y << " " << vertexs[v_pos[1] - start].y << " " << vertexs[v_pos[2] - start].y << std::endl;
 		//    std::cout << " z values : " << vertexs[v_pos[0] - start].z << " " << vertexs[v_pos[1] - start].z << " " << vertexs[v_pos[2] - start].z << std::endl; 
-            mesh.to_ebo.push_back({v_pos[0] -1, v_pos[1] -1, v_pos[2] -1});
+			mesh.to_ebo.push_back({v_pos[0] -1, v_pos[1] -1, v_pos[2] -1});
 		}
     }
     file.close();

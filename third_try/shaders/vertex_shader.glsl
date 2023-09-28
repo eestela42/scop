@@ -14,7 +14,8 @@ uniform mat4 projection;
 void main()
 {
 
-    gl_Position = projection * view * model * vec4(aPos * 0.5, 1.0);
+	float zoom = 2.0;
+    gl_Position = projection * view * model * vec4(aPos / zoom, 1.0);
     TexCoord = vec2(aTexCoord.x, aTexCoord.y);
     ourColor = aColor;
 }

@@ -39,7 +39,7 @@ void game::addColorTo_vbo()
 
 		new_vbo.push_back(this->mesh.to_vbo[i]);
 		new_vbo.push_back(colors[i % 3]);
-		new_vbo.push_back(textureCoo[i % 4]);
+		new_vbo.push_back(textureCoo[i % 2]);
 	}
 	mesh.to_vbo = new_vbo;
 }
@@ -70,6 +70,8 @@ int game::init(int ac, char **av)
 	// 	this->mesh.to_ebo[i].v[2] /= 2;
 	// }
 //print mesh 
+	std::cout << "size : " << this->mesh.to_vbo.size() << std::endl;
+
 	this->addColorTo_vbo();
 
 
