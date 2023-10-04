@@ -23,6 +23,10 @@ public:
 	std::vector<t_vec3> vertexes;
 	std::vector<t_triangle> triangles;
 
+	std::vector<std::vector<t_triangle>> base_triangles;
+
+	std::vector<std::vector<unsigned int>> vertByFace;
+
 	~my_mesh();
 	my_mesh();
 	my_mesh(const my_mesh &copy);
@@ -33,7 +37,15 @@ public:
 
 	std::vector<t_triangle> facesToTriangles();
 	void	facesToTrianglesDupVertexes();
-	void	addInfoToVertexes();
+	void	addInfoToVertexesDup();
+
+
+void 					EcoDupVertex();
+t_triangle 				getSemioptiVerticesTriangle(t_triangle &triangle, int pos,  std::vector<t_vec3> *new_vertexes,
+											std::vector<t_triangle> *base_face_triangles, std::vector<t_triangle> *new_face_triangles);
+std::vector<t_triangle> createTriangleFromFace(std::vector<unsigned int> face);
+void 					addInfoToVertexesEco();
+
 
 	my_mesh&	operator=(const my_mesh &copy);
 };
