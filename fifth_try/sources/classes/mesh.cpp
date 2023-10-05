@@ -175,8 +175,8 @@ void my_mesh::addInfoToVertexesDup()
 		{0.0f, 0.0f, 1.0f}  // blue
 	};
 	t_vec3 textureCoo[] = {
-		{1.0f, 1.0f, 1.0f},
-		{1.0f, 0.0f, 1.0f},
+		{1.0f, 1.0f, 0.0f},
+		{1.0f, 0.0f, 0.0f},
 		{0.0f, 0.0f},
 		{0.0f, 1.0f}
 	};
