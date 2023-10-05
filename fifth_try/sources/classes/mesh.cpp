@@ -177,7 +177,7 @@ void my_mesh::addInfoToVertexesDup()
 	t_vec3 textureCoo[] = {
 		{1.0f, 1.0f, 0.0f},
 		{1.0f, 0.0f, 0.0f},
-		{0.0f, 0.0f},
+		{0.0f, 0.0f, 1.0f},
 		{0.0f, 1.0f}
 	};
 	int colorIndex = 0;
@@ -329,15 +329,15 @@ void my_mesh::addInfoToVertexesEco()
 {
 	std::vector<t_vec3> new_vbo;
 	t_vec3 colors[] = {
-		{1.0f, 0.0f, 0.0f}, // red
-		{0.0f, 1.0f, 0.0f}, // green
-		{0.0f, 0.0f, 1.0f}  // blue
+		{0.1f, 0.1f, 0.1f}, // red
+		{0.2f, 0.2f, 0.2f}, // green
+		{0.3f, 0.3f, 0.3f}  // blue
 	};
 	t_vec3 textureCoo[] = {
 		{1.0f, 1.0f, 1.0f},
 		{1.0f, 0.0f, 1.0f},
 		{0.0f, 0.0f, 1.0f},
-		{0.0f, 1.0f}
+		{0.0f, 1.0f, 1.0f}
 	};
 	int face = 0;
 
@@ -349,8 +349,12 @@ void my_mesh::addInfoToVertexesEco()
 		{
 			// std::cout << "face : " << face << " | vertInFace : " << vertInFace << std::endl;
 			new_vbo.push_back(this->vertexes[pos]);
-			new_vbo.push_back(colors[face % 3]);
-			new_vbo.push_back(textureCoo[vertInFace % 3]);
+			//new_vbo.push_back(colors[face % 3]);
+			float clor = (face % 50) * 0.01 ;
+			t_vec3 tmp = { clor, clor,clor};
+			// t_vec3 tmp = colors[face % 3];
+			new_vbo.push_back(tmp);
+			new_vbo.push_back(textureCoo[vertInFace % 4]);
 			pos++;
 		}
 	}

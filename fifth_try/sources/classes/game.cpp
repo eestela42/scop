@@ -21,9 +21,6 @@ game::game(int width, int height): game()
 }
 
 
-
-
-
 int game::init(int ac, char **av)
 {
 
@@ -32,7 +29,7 @@ int game::init(int ac, char **av)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	this->window = glfwCreateWindow(800, 600, "SCOP LE PROJET COOL", NULL, NULL);
+	this->window = glfwCreateWindow(this->width, this->height, "SCOP LE PROJET COOL", NULL, NULL);
 	if (this->window == NULL)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -42,25 +39,20 @@ int game::init(int ac, char **av)
 
 	mesh = my_mesh(av[1]);
 
-
-
-	std::cout << "vertexes : " << mesh.vertexes.size() << std::endl;
-	std::cout << "triangles : " << mesh.triangles.size() << std::endl;
-	std::cout << "base_vertexes : " << mesh.base_vertexes.size() << std::endl;
-	std::cout << "base_faces : " << mesh.base_faces.size() << std::endl;
-
-	
+	// std::cout << "vertexes : " << mesh.vertexes.size() << std::endl;
+	// std::cout << "triangles : " << mesh.triangles.size() << std::endl;
+	// std::cout << "base_vertexes : " << mesh.base_vertexes.size() << std::endl;
+	// std::cout << "base_faces : " << mesh.base_faces.size() << std::endl;
 
 
 	glfwMakeContextCurrent(this->window);
-	// this->window = glfwCreateWindow(this->width, this->height, "SCOP LE PROJET COOL", NULL, NULL);
 	this->updateIsRunning(true);
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
 		std::cout << "Failed to initialize GLAD" << std::endl;
 		return 3;
 	}
-	glViewport(0, 0, 800, 600);
+	glViewport(0, 0, this->width, this->height);
 	glfwSetFramebufferSizeCallback(this->window, framebuffer_size_callback);
 	return (0);
 }
@@ -176,7 +168,7 @@ int game::initTexture()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	int width, height, nrChannels;
-	unsigned char *data = stbi_load("../resources_42/wall.jpg", &width, &height, &nrChannels, 0);
+	unsigned char *data = stbi_load("../resources_42/poney.jpg", &width, &height, &nrChannels, 0);
 
 
 	

@@ -14,6 +14,7 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 uniform bool isColor;
+uniform float zoom;
 
 void main()
 {
@@ -26,10 +27,21 @@ void main()
 	{
 		isColorOut = 0.0;
 	}
-	float zoom = 2.0;
     gl_Position = projection * view * model * vec4(aPos / zoom, 1.0);
 	ourColor = aColor;
 	TexCoord = vec2(aTexCoord.x, aTexCoord.y);
+	//calculate normal
+	
+
+	// vec3 normal;
+	// vec3 vector1 = aPos[1] - aPos[0];
+	// vec3 vector2 = aPos[2] - aPos[0];
+	// normal.x = vector1.y * vector2.z - vector1.z * vector2.y;
+	// normal.y = vector1.z * vector2.x - vector1.x * vector2.z;
+	// normal.z = vector1.x * vector2.y - vector1.y * vector2.x;
+	// normal = normalize(normal);
+	// isColorOut = 1.0;
+	// ourColor = aColor * normal;
 }
 
 

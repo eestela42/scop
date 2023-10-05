@@ -2,14 +2,26 @@
 //g++ openGL.cpp -lglut -lGLU -lGL; ./a.out
 #include "../includes/stb_image.h"
 
+bool rotate = true;
+bool color = true;
+
+int zoom = 0;
 void processInput(GLFWwindow *window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-	{
-		
-	}
+
+	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+		rotate = !rotate;
+
+	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+		zoom = -1;
+	else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+		zoom = 1;
+	else
+		zoom = 0;
+	if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS)
+		color = !color;
 }
 
 
@@ -23,7 +35,7 @@ int main(int ac, char** av)
 		return 1;
 	}
 
-	game game;
+	game game(1200, 800);
 	game.init(ac, av);
 
 	game.initShadder();
@@ -69,12 +81,33 @@ int main(int ac, char** av)
 
 	// game.displayEBO();
 	// game.displayVBO();
+
+	glm::mat4 model = glm::mat4(1.0f);
+	float time = 0.0f;
+	float zoom_value = 1.0f;
+
  	while(!glfwWindowShouldClose(game.getWindow()))
 	{
 			glfwPollEvents();
+		game.setFloat("zoom", zoom_value);
 		/****matrixes****/
-			glm::mat4 model = glm::mat4(1.0f);
-			model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+			
+			if (rotate)
+			{
+				model = glm::mat4(1.0f) ;
+				model = glm::rotate(model, time * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+				time += 0.01f;
+			}
+
+			if (zoom)
+			{
+				zoom_value += zoom * 0.1f;
+			}
+			if (color)
+				game.setBool("isColor", true);
+			else
+				game.setBool("isColor", false);
+
 			unsigned int modelLoc = glGetUniformLocation(game.getShaderProgram(), "model");
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
