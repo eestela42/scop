@@ -1,5 +1,8 @@
+
+
+
 NAME = scop
-CC = g++
+CC = g++ -Wall -Werror -Wextra
 CFLAGS =  -std=c++11
 OPENGL = -lglut -lGLU -lGL -lGLEW -lglfw  
 
@@ -10,7 +13,8 @@ SRCS =	main.cpp	\
 
 CLASS = game.cpp	\
 		mesh.cpp	\
-		mat4.cpp
+		mat4.cpp	\
+		vec3.cpp	
 
 
 
@@ -28,6 +32,9 @@ clean:
 	rm -rf $(NAME)
 
 fclean: clean
+	rm -rf sources/classes/*.o
+	rm -rf sources/*.o
+
 
 re: fclean all
 

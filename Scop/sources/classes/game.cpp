@@ -1,6 +1,8 @@
 #include "../../includes/header.hpp"
 #include "../../includes/classes/game.hpp"
 
+using namespace ee;
+
 game::~game()
 {
 }
@@ -11,7 +13,7 @@ game::game()
 	this->height = 450;
 	this->isRunning = false;
 	this->window = NULL;
-	this->mesh = my_mesh();
+	this->mesh = ee::mesh();
 }
 
 game::game(int width, int height): game()
@@ -23,7 +25,7 @@ game::game(int width, int height): game()
 
 int game::init(int ac, char **av)
 {
-
+	(void)ac;
 	glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -37,12 +39,9 @@ int game::init(int ac, char **av)
 		return 2;
 	}
 
-	mesh = my_mesh(av[1]);
+	mesh = ee::mesh(av[1]);
 
-	// std::cout << "vertexes : " << mesh.vertexes.size() << std::endl;
-	// std::cout << "triangles : " << mesh.triangles.size() << std::endl;
-	// std::cout << "base_vertexes : " << mesh.base_vertexes.size() << std::endl;
-	// std::cout << "base_faces : " << mesh.base_faces.size() << std::endl;
+	
 
 
 	glfwMakeContextCurrent(this->window);
@@ -127,15 +126,20 @@ int game::initBuffers()
     // position attribute
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
+	
 	// color attribute
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(3* sizeof(float)));
 	glEnableVertexAttribArray(1);
 
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(6 * sizeof(float)));
+	glEnableVertexAttribArray(2);
 
 	glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(8 * sizeof(float)));
+	glEnableVertexAttribArray(3);
+
+
 	
-	glEnableVertexAttribArray(2);
+	
 
 	
 
@@ -207,7 +211,7 @@ unsigned int game::getVBO()
 	return (this->VBO);
 }
 
-void	game::upDateVBO(std::vector<t_vec3> tmp)
+void	game::upDateVBO(std::vector<vec3> tmp)
 {
 	this->mesh.vertexes = tmp;
 }
@@ -237,7 +241,7 @@ void game::updateIsRunning(bool tmp)
 	this->isRunning = tmp;
 }
 
-my_mesh game::getMesh()
+mesh game::getMesh()
 {
 	return (this->mesh);
 }
@@ -261,11 +265,11 @@ float* game::vbo_to_vertexes()
 {
 	float *tmp = new float[this->mesh.vertexes.size() * 3];
 	int i = 0;
-	for	(std::vector<t_vec3>::iterator it = this->mesh.vertexes.begin(); it != this->mesh.vertexes.end(); ++it)
+	for	(std::vector<vec3>::iterator it = this->mesh.vertexes.begin(); it != this->mesh.vertexes.end(); ++it)
 	{
-		tmp[i] = it->v[0];
-		tmp[i + 1] = it->v[1];
-		tmp[i + 2] = it->v[2];
+		tmp[i] = (*it)[0];
+		tmp[i + 1] = (*it)[1];
+		tmp[i + 2] = (*it)[2];
 		i += 3;
 	}
 	return (tmp);
@@ -309,9 +313,9 @@ void game::displayEBO()
 
 void game::displayVBO()
 {
-	for (std::vector<t_vec3>::iterator it = this->mesh.vertexes.begin(); it != this->mesh.vertexes.end(); ++it)
+	for (std::vector<vec3>::iterator it = this->mesh.vertexes.begin(); it != this->mesh.vertexes.end(); ++it)
 	{
-		std::cout << it->v[0] << " " << it->v[1] << " " << it->v[2] << std::endl;
+		std::cout << (*it)[0] << " " << (*it)[1] << " " << (*it)[2] << std::endl;
 	}
 }
 

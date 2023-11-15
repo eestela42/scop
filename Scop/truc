@@ -1,0 +1,1 @@
+g++ -std=c++11 sources/main.o sources/utils.o sources/glad.c sources/classes/game.o sources/classes/mesh.o sources/classes/mat4.o sources/classes/vec3.o sources/main.cpp sources/utils.cpp sources/glad.o sources/classes/game.cpp sources/classes/mesh.cpp sources/classes/mat4.cpp sources/classes/vec3.cpp  -lglut -lGLU -lGL -lGLEW -lglfw   -o scop

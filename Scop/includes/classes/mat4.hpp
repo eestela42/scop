@@ -1,12 +1,14 @@
 #ifndef MAT4_HPP
 # define MAT4_HPP
 
-# include <iostream>
-# include <string.h>
-# include <sstream>
-# include <fstream>
-# include <math.h>
+# include "../base_header.hpp"
 
+
+// # include "vec3.hpp"
+
+
+namespace ee
+{
 class mat4
 {
 	public:
@@ -16,6 +18,8 @@ class mat4
 		mat4(float diag);
 
 		mat4&	operator=(const mat4 &rhs);
+		float*	operator[](int index);
+		mat4	operator*(const mat4 &rhs);
 		
 		mat4&	translate(float x, float y, float z);
 		mat4&	rotate(float angle, float x, float y, float z);
@@ -27,6 +31,7 @@ class mat4
 		float	value[4][4];
 
 };
+}
 
 
 #endif

@@ -1,5 +1,7 @@
 #include "../../includes/classes/mat4.hpp"
 
+using namespace ee;
+
 mat4::mat4()
 {
 	for (int i = 0; i < 4; i++)
@@ -30,6 +32,23 @@ mat4& mat4::operator=(const mat4 &rhs)
 			this->value[i][y] = rhs.value[i][y];
 	return (*this);
 }
+
+float*	mat4::operator[](int index)
+{
+	return (this->value[index]);
+}
+
+mat4	mat4::operator*(const mat4 &rhs)
+{
+	mat4 result;
+
+	for (int i = 0; i < 4; i++)
+		for (int y = 0; y < 4; y++)
+			for (int x = 0; x < 4; x++)
+				result.value[i][y] += this->value[x][y] * rhs.value[i][x];
+	return (result);
+}
+
 
 mat4&	mat4::translate(float x, float y, float z)
 {

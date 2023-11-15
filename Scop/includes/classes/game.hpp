@@ -1,28 +1,23 @@
 #ifndef GAME_HPP
 # define GAME_HPP
 
-# include <iostream>
-# include <string.h>
-# include <sstream>
-# include <fstream>
-# include <math.h>
-# include "../glad/glad.h" 
-# include <GL/glut.h>
-# include "mesh.hpp"
-# include <vector>
+# include "../base_header.hpp"
+// # include "vec3.hpp"
+// # include "mat4.hpp"
+// # include "mesh.hpp"
 # include "../types.hpp"
 
 
 
-
-
+namespace ee
+{
 class game
 {
 private:
 	int width;
 	int height;
 	bool isRunning;
-	my_mesh mesh;
+	ee::mesh mesh;
 	GLFWwindow *window;
 	unsigned int VBO, VAO, EBO;
 	unsigned int shaderProgram;
@@ -46,7 +41,7 @@ public:
 
 	unsigned int 	getVAO();
 	unsigned int 	getVBO();
-	void			upDateVBO(std::vector<t_vec3> tmp);
+	void			upDateVBO(std::vector<ee::vec3> tmp);
 	unsigned int 	getEBO();
 	unsigned int 	getTexture();
 
@@ -55,8 +50,8 @@ public:
 	bool	 		getIsRunning();
 	void 			updateIsRunning(bool tmp);
 
-	my_mesh 		getMesh();
-	void 			upDateMesh(my_mesh tmp);
+	ee::mesh 			getMesh();
+	void 			upDateMesh(ee::mesh tmp);
 
 	GLFWwindow* 	getWindow();
 	void 			upDateWindow(GLFWwindow *tmp);
@@ -73,6 +68,7 @@ public:
 	void 			displayEBO();
 	void 			displayVBO();
 };
+}
 
 
 
