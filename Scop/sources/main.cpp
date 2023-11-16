@@ -16,7 +16,9 @@ bool color_p = false;
 vec3 ctrl_time = 0.1f;
 
 
-mat4 ctrl_rota(1.0f);
+mat4 ctrl_rotaX(1.0f);
+mat4 ctrl_rotaY(1.0f);
+mat4 ctrl_rotaZ(1.0f);
 
 void processInput(GLFWwindow *window)
 {
@@ -41,34 +43,34 @@ void processInput(GLFWwindow *window)
 
 	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS)
 	{
-		ctrl_rota.rotate(ctrl_time[0] * 30.0f, 0.0f, 1.0f, 0.0f);
+		ctrl_rotaY.rotate(ctrl_time[0] * 30.0f, 0.0f, 1.0f, 0.0f);
 		ctrl_time[0] += 0.01f;
 	}
 	if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS)
 	{
-		ctrl_rota.rotate(ctrl_time[0] * 30.0f, 0.0f, 1.0f, 0.0f);
+		ctrl_rotaY.rotate(ctrl_time[0] * 30.0f, 0.0f, 1.0f, 0.0f);
 		ctrl_time[0] -= 0.01f;
 	}
 	
 	if (glfwGetKey(window, GLFW_KEY_Y) == GLFW_PRESS)
 	{
-		ctrl_rota.rotate(ctrl_time[1] * 30.0f, 1.0f, 0.0f, 0.0f);
+		ctrl_rotaX.rotate(ctrl_time[1] * 30.0f, 1.0f, 0.0f, 0.0f);
 		ctrl_time[1] += 0.01f;
 	}
 	if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS)
 	{
-		ctrl_rota.rotate(ctrl_time[1] * 30.0f, 1.0f, 0.0f, 0.0f);
+		ctrl_rotaX.rotate(ctrl_time[1] * 30.0f, 1.0f, 0.0f, 0.0f);
 		ctrl_time[1] -= 0.01f;
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS)
 	{
-		ctrl_rota.rotate(ctrl_time[2] * 30.0f, 0.0f, 0.0f, 1.0f);
+		ctrl_rotaZ.rotate(ctrl_time[2] * 30.0f, 0.0f, 0.0f, 1.0f);
 		ctrl_time[2] += 0.01f;
 	}
 	if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS)
 	{
-		ctrl_rota.rotate(ctrl_time[2] * 30.0f, 0.0f, 0.0f, 1.0f);
+		ctrl_rotaZ.rotate(ctrl_time[2] * 30.0f, 0.0f, 0.0f, 1.0f);
 		ctrl_time[2] -= 0.01f;
 	}
 
@@ -206,7 +208,7 @@ int main(int ac, char** av)
 				const_rota.rotate( const_rota_time * 50.0f, 0.5f, 1.0f, 0.0f);
 				const_rota_time += 0.01f;
 			}
-			model =  ctrl_rota * const_rota;
+			model =  ctrl_rotaX * ctrl_rotaY * ctrl_rotaZ * const_rota;
 			unsigned int modelLoc = glGetUniformLocation(game.getShaderProgram(), "model");
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model.getValue());
 
@@ -232,6 +234,7 @@ int main(int ac, char** av)
 		mat4 modelView =  projection * view * model;
 		unsigned int modelViewLoc = glGetUniformLocation(game.getShaderProgram(), "modelView");
 		glUniformMatrix4fv(modelViewLoc, 1, GL_FALSE, &modelView.getValue());
+
 		
 		glDrawElements(GL_TRIANGLES, game.getMesh().triangles.size() * 3, GL_UNSIGNED_INT, 0);
 
@@ -240,6 +243,5 @@ int main(int ac, char** av)
     } 
 
   
-    glfwTerminate();
 	return 0;
 }

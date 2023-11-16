@@ -5,6 +5,17 @@ using namespace ee;
 
 game::~game()
 {
+	glfwDestroyWindow(this->window);
+	glDeleteBuffers(1, &this->VBO);
+	glDeleteBuffers(1, &this->EBO);
+	glDeleteVertexArrays(1, &this->VAO);
+	glDeleteTextures(1, &this->texture);
+	glDeleteProgram(this->shaderProgram);
+
+	
+	
+	glfwTerminate();
+
 }
 
 game::game()

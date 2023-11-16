@@ -65,7 +65,7 @@ void	mesh::parseFromFile(std::string file_name)
 			continue;
         if (line[0] == 'v' && line[1] == ' ')
         {
-			bool point;
+			bool point = false;
             vec3 vert;
             std::string str[3];
             int i = 2;
