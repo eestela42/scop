@@ -4,7 +4,7 @@
 NAME = scop
 CC = g++ -Wall -Werror -Wextra
 CFLAGS =  -std=c++11
-OPENGL = -lglut -lGLU -lGL -lGLEW -lglfw  
+OPENGL = -lglut -lGLU -lGL -lglfw  
 
 SRCS =	main.cpp	\
 		utils.cpp	\

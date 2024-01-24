@@ -38,9 +38,9 @@ int game::init(int ac, char **av)
 {
 	(void)ac;
 	glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	this->window = glfwCreateWindow(this->width, this->height, "SCOP LE PROJET COOL", NULL, NULL);
 	if (this->window == NULL)
@@ -83,6 +83,7 @@ int game::initShadder()
 	}
 	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
 	glCompileShader(vertexShader);
+	delete[] vertexShaderSource;
 
 	/*Fragment Shader*/
 	const char *fragmentShaderSource = ft_get_file("shaders/fragment_shader.glsl");
@@ -96,6 +97,7 @@ int game::initShadder()
 	}
 	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
 	glCompileShader(fragmentShader);
+	delete[] fragmentShaderSource;
 
 	/*Shader Program Finalisation*/
 	
@@ -183,7 +185,7 @@ int game::initTexture()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	int width, height, nrChannels;
-	unsigned char *data = stbi_load("../resources_42/poney.jpg", &width, &height, &nrChannels, 0);
+	unsigned char *data = stbi_load("resources_42/poney.jpg", &width, &height, &nrChannels, 0);
 
 
 	
